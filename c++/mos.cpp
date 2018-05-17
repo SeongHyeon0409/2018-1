@@ -19,10 +19,6 @@ int main()
                           "...", "-", "..-", "...-", ".--", "-..-", 
                           "-.--", "--.."};
 
-    string alpha[26] = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
-                        "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
-                        "W", "X", "Y", "Z"};
-
     for (int q = 0; q < lineCount; q++)
 	{
         fin >> inmorse;
@@ -59,13 +55,9 @@ int main()
                     break;
                 }
             }
-            cout << inmorse << endl;
-            cout << compareText << endl;
         }
         cout << compareText << endl;
     }//end lineCount
 
     return 0;
 }
-
-

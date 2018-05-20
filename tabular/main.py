@@ -1,7 +1,15 @@
+# -*- coding: utf-8 -*-
 #2018.5.20
 #20171656
 #Digital Logic Design
 #implement quine-mccluskey method
+
+#앞으로 해야될일:
+# 00- 을 001과 000으로 나누기
+# spl 과 pl 분리하기
+# 확장성 문제 해결하기
+
+import copy
 
 def DtoB(num):
     if num == 1:
@@ -39,20 +47,22 @@ def remind(a, b, numVar):
             newNum += a[i]
     return newNum
 
-def minimize(minimizeF, numberOfvariables,size):
+def minimize(minimizeF, nOv,size):
 
     minimizeF2 = [['0' for a in range(0)] for b in range(size)]
+    copyF = copy.deepcopy(minimizeF)
     temp = []
 
-    for j in range(len(minimizeF)-1): # 0 1 2
-        for i in range(len(minimizeF[j])): # 0,,,
-            for k in range(len(minimizeF[j+1])): # 1 2 1
-                if remindCount(minimizeF[j][i],minimizeF[j+1][k],numberOfvariables) == 1:
-                    a = remind(minimizeF[j][i],minimizeF[j+1][k],numberOfvariables)
+    for j in range(len(minimizeF) - 1):  # 0 1 2
+        for i in range(len(minimizeF[j])):  # 0,,,
+            for k in range(len(minimizeF[j + 1])):  # 1 2 1
+                if remindCount(minimizeF[j][i], minimizeF[j + 1][k], nOv) == 1:
+                    a = remind(minimizeF[j][i], minimizeF[j + 1][k], nOv)
                     minimizeF2[j].append(a)
-                    temp.append(a)
+                    copyF[j][i] = 'used'
+                    copyF[j+1][k] = 'used'
 
-    return (minimizeF2, temp)
+    return (minimizeF2, copyF)
 
 def quineMccluskey(inNumbers):
     ##error exception
@@ -99,17 +109,23 @@ def quineMccluskey(inNumbers):
     print (minimizeF)
 
     temp = [1]
-    if not temp:
-        print("ab")
-    while(!temp):
-        minimizeF2, temp = minimize(minimizeF,numberOfvariables,size-1)
-        size -= 1
-
+    minimizeF2, temp = minimize(minimizeF, numberOfvariables, size - 1)
     print(minimizeF2)
     print(temp)
 
+    # minimizeF3, temp = minimize(minimizeF2, numberOfvariables, size - 2)
+    # print(temp)
+    # print(minimizeF2)
+
+    # while(temp):
+    #     minimizeF3 = minimizeF2
+    #     minimizeF2, temp = minimize(minimizeF,numberOfvariables,size - 1)
+    #     size -= 1
+
+
 if __name__ == "__main__":
     # inNumbers = input("input[# of input variables][# of minterms ][minterm list] : ")
+    #inNumbers = "4 10 0 3 2 4 7 6 13 15 9 11"
     inNumbers = "3 5 0 1 5 6 7"
     quineMccluskey(inNumbers)
 

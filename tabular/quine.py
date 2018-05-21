@@ -135,19 +135,55 @@ def quineMccluskey(inNumbers):
     for i in unused:
         coverList[i] = checkEpi(minterms,i)
 
-    for k in minterms:
-        count  = 0
-        for i in unused:
-            for j in len(i):
-                
-
     print(coverList)
 
+    for k in minterms:
+        count  = 0
+        for i in coverList:
+            for j in coverList[i]:
+                if k == j:
+                    count += 1
+        countList[k] = count
+
+    print(countList)
+
+    countList2 = []
+    for i in countList.keys():
+        if countList[i] == 1:
+            countList2.append(i)
+
+    print(countList2)
+
+    epiList = []
+    nepiList = []
+
+    for i in coverList:
+       for j in countList2:
+            if j in coverList[i]:
+                if i not in epiList:
+                    epiList.append(i)
+
+    for i in unused:
+        if i not in epiList:
+            nepiList.append(i)
+
+    print(epiList)
+    print(nepiList)
+
+    #print result
+    print("EPI ",end = "")
+    for i in epiList:
+        print(i, end = " ")
+    print("NEPI ",end = "")
+    for i in nepiList:
+        print(i, end = " ")
+
 if __name__ == "__main__":
-    # inNumbers = input("input[# of input variables][# of minterms ][minterm list] : ")
+    #inNumbers = input("input[# of input variables][# of minterms ][minterm list] : ")
     inNumbers = "4 8 0 4 8 10 11 12 13 15"
-    #inNumbers = "3 5 0 1 5 6 7"
-    #inNumbers = "5 2 30 31"
+    #inNumbers = "3 6 0 1 2 5 6 7"
+
+    #inNumbers = "3 6 0 1 2 5 6 7"
     quineMccluskey(inNumbers)
 
 

@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
 #2018.5.20
-#20171656
+#20171656 유성현
 #Digital Logic Design
 #implement quine-mccluskey method
-
-#앞으로 해야될일:
-# 00- 을 001과 000으로 나누기
-# spl 과 pl 분리하기
-# 확장성 문제 해결하기
 
 import copy
 
@@ -109,13 +104,10 @@ def quineMccluskey(inNumbers):
             print("please input positive integer.")
 
     #degit to binary
-
     minterms = [DtoB(i) for i in minterms]
     minterms = [DtoBPlus(i, numberOfvariables) for i in minterms]
 
-    print("minterms: ",minterms)
-    print("")
-
+    #if numberOfminters is one, return minterm
     if numberOfminterms == 1:
         result = "EPI "
         result += minterms[0]
@@ -123,28 +115,24 @@ def quineMccluskey(inNumbers):
 
         return result
 
+    #minimize until no new implicats are generated
     unused = []
-    minimizeF2, temp = minimize(minterms, numberOfvariables)
+    minimizeF, temp = minimize(minterms, numberOfvariables)
     while(1):
-        minimizeF2, temp = minimize(minimizeF2, numberOfvariables)
+        minimizeF, temp = minimize(minimizeF, numberOfvariables)
         for i in temp:
             if i != 'used':
                 unused.append(i)
         if not temp:
             break
 
-    print("minterms: ", minimizeF2)
-    print("temp: ", temp)
-    print("unsued : ", unused ,"\n")
-
-
+    #find minterms covered each implicants
     coverList = {}
     countList = {}
     for i in unused:
         coverList[i] = checkEpi(minterms,i)
 
-    print("coverList : ",coverList)
-
+    #if count is one, this implicant is epi.
     for k in minterms:
         count  = 0
         for i in coverList:
@@ -152,8 +140,6 @@ def quineMccluskey(inNumbers):
                 if k == j:
                     count += 1
         countList[k] = count
-
-    print("countList : ",countList)
 
     countList2 = []
     for i in countList.keys():
@@ -173,7 +159,6 @@ def quineMccluskey(inNumbers):
         if i not in epiList:
             nepiList.append(i)
 
-    print("")
     #print result
 
     result = ""
@@ -192,7 +177,6 @@ if __name__ == "__main__":
     inNumbers = input("input[# of input variables][# of minterms][minterm list] : ")
     #inNumbers = "4 8 0 4 8 10 11 12 13 15"
     #inNumbers = "3 6 0 1 2 5 6 7"
-
     #inNumbers = "3 6 0 1 2 5 6 7"
     print(quineMccluskey(inNumbers))
 

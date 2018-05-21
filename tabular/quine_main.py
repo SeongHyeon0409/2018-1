@@ -55,8 +55,6 @@ def minimize(minimizeF, nOv):
                     minimizeF2.append(a)
                 copyF[j] = 'used'
                 copyF[i] = 'used'
-
-
     return (minimizeF2, copyF)
 
 def checkEpi(minterms,a):
@@ -80,8 +78,8 @@ def quineMccluskey(inNumbers):
         inputList2 = inNumbers.split(" ")
         inputList = list(map(int, inputList2))
     except:
-        print("Please check the input again.")
-        return 0
+        return ("Please check the input again.")
+
 
     numberOfvariables = inputList[0]
     numberOfminterms = inputList[1]
@@ -89,35 +87,32 @@ def quineMccluskey(inNumbers):
 
     ##error exception
     if numberOfminterms != len(minterms):
-        print("please input the number of minterms %d ." %numberOfminterms)
-        return 0
+        return ("please check the number of minterms.")
 
     if numberOfvariables<3 or numberOfvariables>6:
-        print("Please input the number of variables 3 to 6.")
-        return 0
+        return ("Please input the number of variables 3 to 6.")
 
     for i in minterms:
         if i >= 2 ** numberOfvariables:
-            print("please input minterms smaller than %d ." %(2 ** numberOfvariables))
-            return 0
+            return("please input minterms smaller than %d ." %(2 ** numberOfvariables))
         elif i < 0:
-            print("please input positive integer.")
+            return("please input positive integer.")
 
     #degit to binary
     minterms = [DtoB(i) for i in minterms]
     minterms = [DtoBPlus(i, numberOfvariables) for i in minterms]
 
-    #if numberOfminters is one, return minterm
-    if numberOfminterms == 1:
-        result = "EPI "
-        result += minterms[0]
-        result += " NEPI "
-
-        return result
+    # #if numberOfminters is one, return minterm
+    # if numberOfminterms == 1:
+    #     result = "EPI "
+    #     result += minterms[0]
+    #     result += " NEPI "
+    #
+    #     return result
 
     #minimize until no new implicats are generated
     unused = []
-    minimizeF, temp = minimize(minterms, numberOfvariables)
+    minimizeF = copy.deepcopy(minterms)
     while(1):
         minimizeF, temp = minimize(minimizeF, numberOfvariables)
         for i in temp:
@@ -179,7 +174,6 @@ if __name__ == "__main__":
     #inNumbers = "3 6 0 1 2 5 6 7"
     #inNumbers = "3 6 0 1 2 5 6 7"
     print(quineMccluskey(inNumbers))
-
 
 
 

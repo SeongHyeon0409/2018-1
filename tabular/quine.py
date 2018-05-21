@@ -60,8 +60,6 @@ def minimize(minimizeF, nOv):
                     minimizeF2.append(a)
                 copyF[j] = 'used'
                 copyF[i] = 'used'
-
-
     return (minimizeF2, copyF)
 
 def checkEpi(minterms,a):
@@ -124,7 +122,7 @@ def quineMccluskey(inNumbers):
         return result
 
     unused = []
-    minimizeF2, temp = minimize(minterms, numberOfvariables)
+    minimizeF2 = copy.deepcopy(minterms)
     while(1):
         minimizeF2, temp = minimize(minimizeF2, numberOfvariables)
         for i in temp:
@@ -195,7 +193,6 @@ if __name__ == "__main__":
 
     #inNumbers = "3 6 0 1 2 5 6 7"
     print(quineMccluskey(inNumbers))
-
 
 
 

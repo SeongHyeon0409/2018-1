@@ -37,7 +37,7 @@ def remind(a, b, numVar):
     newNum = ''
     for i in range(numVar):
         if a[i] != b[i]:
-            newNum += '-'
+            newNum += '2'
         else:
             newNum += a[i]
     return newNum
@@ -62,7 +62,7 @@ def checkEpi(minterms,a):
     for i in minterms:
         flag = 0
         for j in range(len(i)):
-            if i[j] == a[j] or i[j] == '-' or a[j] == '-':
+            if i[j] == a[j] or i[j] == '2' or a[j] == '2':
                 continue
             else:
                 flag = 1
@@ -72,14 +72,13 @@ def checkEpi(minterms,a):
 
     return b
 
-def quineMccluskey(inNumbers):
+def quineMccluskey(inputList):
     ##error exception
-    try:
-        inputList2 = inNumbers.split(" ")
-        inputList = list(map(int, inputList2))
-    except:
-        return ("Please check the input again.")
-
+    # try:
+    #     inputList2 = inNumbers.split(" ")
+    #     inputList = list(map(int, inputList2))
+    # except:
+    #     return ("Please check the input again.")
 
     numberOfvariables = inputList[0]
     numberOfminterms = inputList[1]
@@ -94,21 +93,13 @@ def quineMccluskey(inNumbers):
 
     for i in minterms:
         if i >= 2 ** numberOfvariables:
-            return("please input minterms smaller than %d ." %(2 ** numberOfvariables))
+            return ("please input minterms smaller than %d ." %(2 ** numberOfvariables))
         elif i < 0:
-            return("please input positive integer.")
+            return ("please input positive integer.")
 
     #degit to binary
     minterms = [DtoB(i) for i in minterms]
     minterms = [DtoBPlus(i, numberOfvariables) for i in minterms]
-
-    # #if numberOfminters is one, return minterm
-    # if numberOfminterms == 1:
-    #     result = "EPI "
-    #     result += minterms[0]
-    #     result += " NEPI "
-    #
-    #     return result
 
     #minimize until no new implicats are generated
     unused = []
@@ -144,6 +135,7 @@ def quineMccluskey(inNumbers):
     epiList = []
     nepiList = []
 
+    #insert epi to epiList , insert nepi to nepiList.
     for i in coverList:
        for j in countList2:
             if j in coverList[i]:
@@ -156,25 +148,42 @@ def quineMccluskey(inNumbers):
 
     #print result
 
-    result = ""
-    result += "EPI "
-    for i in epiList:
-        result += i
-        result += " "
-    result += "NEPI "
-    for i in nepiList:
-        result += i
-        result += " "
+    # result = ""
+    # result += "EPI "
+    # for i in epiList:
+    #     result += i
+    #     result += " "
+    # result += "NEPI "
+    # for i in nepiList:
+    #     result += i
+    #     result += " "
 
-    return result
+
+    result = []
+    result.append("EPI")
+    for i in sorted(epiList):
+        result.append(i)
+    result.append("NEPI")
+    for i in sorted(nepiList):
+        result.append(i)
+
+    def Twotobar(x):
+        print(x.replace("2","-"))
+        return x.replace("2","-")
+
+    #result = map(Twotobar,result)
+
+    realResult = []
+    for i in result:
+        a = i.replace("2","-")
+        realResult.append(a)
+
+    return realResult
 
 if __name__ == "__main__":
-    inNumbers = input("input[# of input variables][# of minterms][minterm list] : ")
+    #inNumbers = input("input[# of input variables][# of minterms][minterm list] : ")
     #inNumbers = "4 8 0 4 8 10 11 12 13 15"
-    #inNumbers = "3 6 0 1 2 5 6 7"
-    #inNumbers = "3 6 0 1 2 5 6 7"
+    #inNumbers = [3, 6, 0, 1, 2, 5, 6, 7]
+    inNumbers = [4,7,0,1,2,3,10,11,12]
     print(quineMccluskey(inNumbers))
-
-
-
 

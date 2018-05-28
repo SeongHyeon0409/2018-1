@@ -73,7 +73,7 @@ def checkEpi(minterms,a):
     return b
 
 def quineMccluskey(inputList):
-    ##error exception
+    #error exception
     # try:
     #     inputList2 = inNumbers.split(" ")
     #     inputList = list(map(int, inputList2))
@@ -146,19 +146,6 @@ def quineMccluskey(inputList):
         if i not in epiList:
             nepiList.append(i)
 
-    #print result
-
-    # result = ""
-    # result += "EPI "
-    # for i in epiList:
-    #     result += i
-    #     result += " "
-    # result += "NEPI "
-    # for i in nepiList:
-    #     result += i
-    #     result += " "
-
-
     result = []
     result.append("EPI")
     for i in sorted(epiList):
@@ -167,23 +154,15 @@ def quineMccluskey(inputList):
     for i in sorted(nepiList):
         result.append(i)
 
-    def Twotobar(x):
-        print(x.replace("2","-"))
-        return x.replace("2","-")
+    for i in range(len(result)):
+        result[i] = result[i].replace("2","-")
 
-    #result = map(Twotobar,result)
-
-    realResult = []
-    for i in result:
-        a = i.replace("2","-")
-        realResult.append(a)
-
-    return realResult
+    return result
 
 if __name__ == "__main__":
     #inNumbers = input("input[# of input variables][# of minterms][minterm list] : ")
-    #inNumbers = "4 8 0 4 8 10 11 12 13 15"
+    inNumbers = [4, 8, 0, 4, 8, 10, 11, 12, 13, 15]
     #inNumbers = [3, 6, 0, 1, 2, 5, 6, 7]
-    inNumbers = [4,7,0,1,2,3,10,11,12]
+    #inNumbers = [4,7,0,1,2,3,10,11,12]
     print(quineMccluskey(inNumbers))
 

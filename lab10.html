@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+<html lang="kr" >
+    <head>
+        <meta charset="utf-8" />
+        <title>Google Places API - practice | Script Tutorials</title>
+        <link href="css/main.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false&key=AIzaSyAd-Eba1hVEvIdl6-PlzNOxMFKAjh_Bws8"></script>
+        <script src="js/script.js"></script>
+        <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    </head>
+    <body>
+
+      XY 좌표: <br>
+      Point1: <input type='text' id='x1' /> , <input type='text' id='y1' /> <br>
+      Point2: <input type='text' id='x2' /> , <input type='text' id='y2' /> <br>
+    <br>
+      위도-경도 좌표: <br>
+      Point1: <input type='text' id='lon1' /> , <input type='text' id='lat1' /> <br>
+      Point2: <input type='text' id='lon2' /> , <input type='text' id='lat2' /> <br>
+    <br>
+      2점간 거리: <input type='text' id='distanceKm' /> km  <br>
+      <button onclick="convertGsrToUtmK(setLatLanPoints)">
+        convertGsrToUtmK
+      </button>
+
+<script>
+
+function convertGsrToUtmK(callback) {
+    console.log('fn convertGsrToUtmK');
+    // 좌표 data
+    var data = {};
+    // 좌표 1
+    data.x1 = $("#x1").val();
+    data.y1 = $("#y1").val();
+    // 좌표 2
+    data.x2 = $("#x2").val();
+    data.y2 = $("#y2").val();
+
+    $.ajax({
+        type: 'POST',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        url: 'http://localhost:3020/convertGsrToUtmK',
+        success: function (data) {
+            console.log('convert success');
+            var result = JSON.parse(data); // 서버로부터 받은 경위도 데이터
+            console.log(result);
+            // [호출 순서] convertGsrToUtmK → setLatLanPoints → getDistanceFromLatLonInKm
+            callback(result, getDistanceFromLatLonInKm);
+        }
+    });
+}
+
+function convertGsrToUtmK2() {
+    console.log('fn convertGsrToUtmK2');
+    // 좌표 data
+    var data = {};
+    // 좌표 1
+    data.x1 = $("#gmap_coord_x").val();
+    data.y1 = $("#gmap_coord_y").val();
+    // 좌표 2
+    data.x2 = data.x1;
+    data.y2 = data.y1;
+
+    $.ajax({
+        type: 'POST',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        url: 'http://localhost:3020/convertGsrToUtmK',
+        success: function (data) {
+            console.log('convert success');
+            var result = JSON.parse(data); // 서버로부터 받은 경위도 데이터
+            console.log(result);
+            // [호출 순서] convertGsrToUtmK → setLatLanPoints → getDistanceFromLatLonInKm
+            $("#gmap_coord_long").val(result.X1);
+            $("#gmap_coord_lat").val(result.Y1);
+            setCoord();
+        }
+    });
+}
+
+function entrcToUtmK() {
+    console.log('fn entrcToUtmK');
+    // 좌표 data
+    var data = {};
+    // 좌표 1
+    data.name = $("#entrc_name").val();
+
+    $.ajax({
+        type: 'POST',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        url: 'http://localhost:3020/entrcToUtmK',
+        success: function (data) {
+            console.log('find success');
+            var result = JSON.parse(data);
+            console.log(result);
+            $("#gmap_coord_long").val(result.X);
+            $("#gmap_coord_lat").val(result.Y);
+            setCoord();
+        }
+    });
+}
+
+// 경위도 값 Set
+function setLatLanPoints(points, callback) {
+    $("#lon1").val(points.X1);
+    $("#lat1").val(points.Y1);
+    $("#lon2").val(points.X2);
+    $("#lat2").val(points.Y2);
+    callback(); // [Name] getDistanceFromLatLonInKm
+}
+
+// 계산된 경위도 사이의 거리 계산
+function getDistanceFromLatLonInKm() {
+    //convertGsrToUtmK(setLatLanPoints); // 좌표 변환
+    var lat1 = document.getElementById('lat1').value;
+    var lon1 = document.getElementById('lon1').value;
+    var lat2 = document.getElementById('lat2').value;//lat1.toRadians();
+    var lon2 = document.getElementById('lon2').value;//lat1.toRadians();
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2 - lat1);  // deg2rad below
+    var dLon = deg2rad(lon2 - lon1);
+
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                     Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                     Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c; // Distance in km
+    $("#distanceKm").val(d + 'km');
+    return d;
+}
+function deg2rad(deg) {
+    return deg * (Math.PI / 180)
+}
+function cal() {
+    var lat1 = $('#lat1').val();
+    var lat2 = $('#lat2').val();
+    var R = 6371e3; // metres
+    var φ1 = lat1.toRadians();
+    var φ2 = lat2.toRadians();
+    var Δφ = (lat2 - lat1).toRadians();
+    var Δλ = (lon2 - lon1).toRadians();
+    var a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                  Math.cos(φ1) * Math.cos(φ2) *
+                  Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+}
+
+</script>
+
+        <header>
+            <h2>Google Places API - practice</h2>
+            <a href="http://www.script-tutorials.com/google-places-api-practice/" class="stuts">Back to original tutorial on <span>Script Tutorials</span></a>
+        </header>
+
+        <div id="container" class="container">
+            <div id="gmap_canvas"></div>
+            <div class="actions">
+                <div class="button">
+                  <label for="gmap_coord">건물이름:</label>
+                  이름: <input id="entrc_name" type="text" name="entrc_name" /> <br>
+                <div id="button5" class="button" onclick="entrcToUtmK(); return false;">건물찾기</div>
+                <div class="button">
+                  <label for="gmap_coord">X/Y좌표:</label>
+                  X: <input id="gmap_coord_x" type="text" name="gmap_coord_x" /> <br>
+                  Y: <input id="gmap_coord_y" type="text" name="gmap_coord_y" /></div>
+                <div id="button4" class="button" onclick="convertGsrToUtmK2(); return false;">XY->위도/경도 변환</div>                <div class="button">
+                  <label for="gmap_coord">위도/경도:</label>
+                  위도: <input id="gmap_coord_lat" type="text" name="gmap_coord_lat" /> <br>
+                  경도: <input id="gmap_coord_long" type="text" name="gmap_coord_long" /></div>
+                <div id="button3" class="button" onclick="setCoord(); return false;">위도/경도 설정</div>
+                <div class="button">
+                    <label for="gmap_where">Where:</label>
+                    <input id="gmap_where" type="text" name="gmap_where" /></div>
+                <div id="button2" class="button" onclick="findAddress(); return false;">Search for address</div>
+                <div class="button">
+                    <label for="gmap_keyword">Keyword (optional):</label>
+                    <input id="gmap_keyword" type="text" name="gmap_keyword" /></div>
+                <div class="button">
+                    <label for="gmap_type">Type:</label>
+                    <select id="gmap_type">
+                        <option value="art_gallery">art_gallery</option>
+                        <option value="atm">atm</option>
+                        <option value="bank">bank</option>
+                        <option value="bar">bar</option>
+                        <option value="cafe">cafe</option>
+                        <option value="gas_station">주유소</option>
+                        <option value="restaurant">레스토랑</option>
+                        <option value="food">food</option>
+                        <option value="hospital">hospital</option>
+                        <option value="police">police</option>
+                        <option value="store">store</option>
+
+                        <option value="laundry">laundry</option>
+                        <option value="lawyer">lawyer</option>
+                        <option value="library">library</option>
+                        <option value="museum">museum</option>
+                        <option value="park">park</option>
+                        <option value="church">church</option>
+                        <option value="dentist">dentist</option>
+                        <option value="department_store">department_store</option>
+                        <option value="school">school</option>
+                        <option value="storage">storage</option>
+                        <option value="gym">gym</option>
+                        <option value="university">university</option>
+                        <option value="subway_station">subway_station</option>
+                        <option value="stadium">stadium</option>
+                        <option value="embassy">embassy</option>
+                        <option value="post_office">post_office</option>
+                        <option value="doctor">doctor</option>
+                        <option value="pharmacy">pharmacy</option>
+                        <option value="cemetery">cemetery</option>
+                        <option value="bakery">bakery</option>
+                    </select>
+                </div>
+                <div class="button">
+                    <label for="gmap_radius">Radius:</label>
+                    <select id="gmap_radius">
+                        <option value="500">500</option>
+                        <option value="1000">1000</option>
+                        <option value="1500">1500</option>
+                        <option value="5000">5000</option>
+                    </select>
+                </div>
+                <input type="hidden" id="lat" name="lat" value="37.61005" />
+                <input type="hidden" id="lng" name="lng" value="126.99719" />
+                <div id="button1" class="button" onclick="findPlaces(); return false;">Search for objects</div>
+            </div>
+        </div>
+    </body>
+</html>

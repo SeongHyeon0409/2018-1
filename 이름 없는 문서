@@ -1,0 +1,42 @@
+서로다른도메인에서 자바스크립트로 접근하려 했을때 보안상접근을 거부한다.
+
+1. document.domain = "naver.com";
+서브도메인이 다를경
+처럼 공통된 부분을 이용한다.
+
+2.flash
+
+flash를 사용하면 get/post의 모든 메소드를 사용할 수 있고 
+크로스도메인 문제가 생기지 않는다.단 flash가 동작하지 않는 환경에선 사용불가.
+
+3.iframe proxying
+중간에 프록시파일(php)를 하나 만들어 그 파일을 거쳐서 통신하는방법
+스크립트 > php > 다른 도메인으로 접근하는 방식
+
+
+Jqeury ui widget
+
+1.button
+2.accordion
+3.menu
+4.taps
+5.slider
+6.checkboxradio
+
+
+Jquery plugin
+
+Autosize
+textarea의 height를 사용자가 입력한 값에 따라서 자동조정한다.
+
+Zoom
+이미지를 마우스클릭/오버 시 확대한다.
+
+chosen
+select box를 더욱 다루기 쉽게 만들어준다.
+
+Pronto
+빠른 페이지로드를 위한 플러그인
+
+zoomer
+부드러운 이미지 탐색을 위한 플러그인
